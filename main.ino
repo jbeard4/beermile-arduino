@@ -110,12 +110,16 @@ void loop(void) {
       lcd.print(uid[i], HEX); 
     }
 
+    lcd.setRGB(255, 0, 0);
+
   }
   else
   {
     // PN532 probably timed out waiting for a card
     Serial.println("Timed out waiting for a card");
     analogWrite(pinLed, 0);
+    lcd.clear();
+    lcd.setRGB(0, 0, 0);
   }
 }
 
