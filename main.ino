@@ -35,6 +35,13 @@
   PN532 nfc(pn532i2c);
 #endif
 
+#include "rgb_lcd.h"
+
+rgb_lcd lcd;
+
+const int colorR = 255;
+const int colorG = 0;
+const int colorB = 0;
 
 const int pinLed    = 4;
 const int BREATH_DELAY = 5; // milliseconds
@@ -44,6 +51,10 @@ void setup(void) {
   Serial.println("Hello!");
 
   pinMode(pinLed, OUTPUT);
+
+  // set up the LCD's number of columns and rows:
+  lcd.begin(16, 2);
+
   nfc.begin();
 
   uint32_t versiondata = nfc.getFirmwareVersion();
@@ -91,6 +102,14 @@ void loop(void) {
     analogWrite(pinLed, 255);
     // Wait 1 second before continuing
     //delay(1000);
+
+    // Print a message to the LCD.
+    lcd.setCursor(0,0);
+    for (uint8_t i=0; i < uidLength; i++) 
+    {
+      lcd.print(uid[i], HEX); 
+    }
+
   }
   else
   {
