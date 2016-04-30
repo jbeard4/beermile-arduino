@@ -1,0 +1,6 @@
+[submodule "examples/PN532"]
+	path = examples/PN532
+	url = git@github.com:elechouse/PN532.git
+[submodule "examples/Sketchbook_Starter_Kit_V2.0"]
+	path = examples/Sketchbook_Starter_Kit_V2.0
+	url = git@github.com:Seeed-Studio/Sketchbook_Starter_Kit_V2.0.git
