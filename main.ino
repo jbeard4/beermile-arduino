@@ -44,12 +44,15 @@ const int colorG = 0;
 const int colorB = 0;
 
 const int pinLed    = 4;
+const int speakerPin = 3;                  // Grove Buzzer connect to D3
 const int BREATH_DELAY = 5; // milliseconds
+
   
 void setup(void) {
   Serial.begin(115200);
 
   pinMode(pinLed, OUTPUT);
+  pinMode(speakerPin, OUTPUT);
 
   // set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
@@ -89,6 +92,8 @@ void loop(void) {
   uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };  // Buffer to store the returned UID
   uint8_t uidLength;                        // Length of the UID (4 or 7 bytes depending on ISO14443A card type)
   char c;
+
+  digitalWrite(speakerPin, LOW);
 
   while(Serial.available()){
     c = Serial.read();
@@ -141,6 +146,9 @@ void loop(void) {
     {
       lcd.print(uid[i], HEX); 
     }
+
+    digitalWrite(speakerPin, HIGH);
+    delay(100);
   }
   else
   {
