@@ -48,18 +48,22 @@ const int BREATH_DELAY = 5; // milliseconds
   
 void setup(void) {
   Serial.begin(115200);
-  Serial.println("Hello!");
 
   pinMode(pinLed, OUTPUT);
 
   // set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
 
+  Serial.println("Hello!");
+  lcd.setRGB(255, 255, 255);
+  lcd.print("Hello!");
+
   nfc.begin();
 
   uint32_t versiondata = nfc.getFirmwareVersion();
   if (! versiondata) {
     Serial.print("Didn't find PN53x board");
+    lcd.print("Didn't find PN53x board");
     while (1); // halt
   }
   
@@ -77,12 +81,39 @@ void setup(void) {
   nfc.SAMConfig();
     
   Serial.println("Waiting for an ISO14443A card");
+  lcd.print("Waiting for card");
 }
 
 void loop(void) {
   boolean success;
   uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };  // Buffer to store the returned UID
   uint8_t uidLength;                        // Length of the UID (4 or 7 bytes depending on ISO14443A card type)
+  char c;
+
+  while(Serial.available()){
+    c = Serial.read();
+    Serial.println("Received character");
+    Serial.println(c);
+    lcd.setCursor(0,1);
+    switch(c){
+      case 'E':
+        lcd.setRGB(255, 0, 0);
+        lcd.print("Error: fs"); 
+        break;
+      case 'F':
+        lcd.setRGB(255, 0, 0);
+        lcd.print("Error: cloud"); 
+        break;
+      case 'S':
+        lcd.print("Saved to file"); 
+        lcd.setRGB(0, 0, 255);
+        break;
+      case 'T':
+        lcd.print("Saved to cloud"); 
+        lcd.setRGB(0, 255, 0);
+        break;
+    }
+  }
   
   // Wait for an ISO14443A type cards (Mifare, etc.).  When one is found
   // 'uid' will be populated with the UID, and uidLength will indicate
@@ -93,9 +124,10 @@ void loop(void) {
     Serial.println("Found a card!");
     Serial.print("UID Length: ");Serial.print(uidLength, DEC);Serial.println(" bytes");
     Serial.print("UID Value: ");
+    Serial.print(" 0x");
     for (uint8_t i=0; i < uidLength; i++) 
     {
-      Serial.print(" 0x");Serial.print(uid[i], HEX); 
+      Serial.print(uid[i], HEX); 
     }
     Serial.println("");
 
@@ -109,9 +141,6 @@ void loop(void) {
     {
       lcd.print(uid[i], HEX); 
     }
-
-    lcd.setRGB(255, 0, 0);
-
   }
   else
   {
@@ -120,6 +149,7 @@ void loop(void) {
     analogWrite(pinLed, 0);
     lcd.clear();
     lcd.setRGB(0, 0, 0);
+    lcd.print("Waiting for card");
   }
 }
 
